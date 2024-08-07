@@ -157,3 +157,48 @@ class Adventure:
         self.player = None
 
     def start_game(self):
+        name = input("Enter your name: ")
+        self.player = Player(name)
+        print(self.player.get_status())
+
+    def play(self):
+        self.start_game()
+        while True:
+            command = input("> ").split()
+            if command[0] in ["go", "move"]:
+                direction = command[1]
+                print(self.player.move(direction))
+            elif command[0] == "pick":
+                item = command[1]
+                print(self.player.pick_item(item))
+            elif command[0] == "drop":
+                item = command[1]
+                print(self.player.drop_item(item))
+            elif command[0] == "inventory":
+                print(self.player.check_inventory())
+            elif command[0] == "status":
+                print(self.player.get_status())
+            elif command[0] in ["quit", "exit"]:
+                break
+            else:
+                print("Unknown command.")
+
+class NPC:
+    def __init__(self, name, description):
+        self.name = name
+        self.description = description
+
+    def interact(self):
+        return f'{self.name}: {self.description}'
+
+class GameWithNPC(Game):
+    def create_rooms(self):
+        rooms = super().create_rooms()
+        rooms['Village'].npc = NPC("Villager", "Hello stranger, welcome to our village.")
+        rooms['Castle'].npc = NPC("Guard", "You may enter the castle.")
+        rooms['Dungeon'].npc = NPC("Prisoner", "Please help me escape.")
+        rooms['Library'].npc = NPC("Librarian", "Shh... keep your voice down. This is a library.")
+        rooms['Tower'].npc = NPC("Sage", "I can see the future from here.")
+        rooms['Garden'].npc = NPC("Gardener", "Do you like the flowers?")
+        rooms['Blacksmith'].npc = NPC("Blacksmith", "I can craft weapons for you.")
+        rooms['Market'].npc = NPC("Merchant", "Take a look at my wares.")
