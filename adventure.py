@@ -112,3 +112,48 @@ class Game:
             return True
         else:
             return False
+
+    def check_inventory(self):
+        return self.inventory
+
+    def get_current_room_details(self):
+        return self.current_room.get_details()
+
+    def end_game(self):
+        self.is_over = True
+
+class Player:
+    def __init__(self, name):
+        self.name = name
+        self.health = 100
+        self.game = Game()
+
+    def move(self, direction):
+        if self.game.move(direction):
+            return f'You move {direction}. {self.game.get_current_room_details()}'
+        else:
+            return "You can't go that way."
+
+    def pick_item(self, item):
+        if self.game.pick_item(item):
+            return f'You picked up {item}.'
+        else:
+            return f'There is no {item} here.'
+
+    def drop_item(self, item):
+        if self.game.drop_item(item):
+            return f'You dropped {item}.'
+        else:
+            return f'You do not have {item}.'
+
+    def check_inventory(self):
+        return f'Inventory: {", ".join(self.game.check_inventory())}'
+
+    def get_status(self):
+        return f'Player: {self.name}, Health: {self.health}, {self.game.get_current_room_details()}'
+
+class Adventure:
+    def __init__(self):
+        self.player = None
+
+    def start_game(self):
