@@ -59,3 +59,56 @@ class Game:
         treasure.add_paths({'south': dungeon})
         library.add_paths({'west': castle, 'north': tower, 'east': temple})
         tower.add_paths({'south': library})
+        garden.add_paths({'south': forest, 'east': lake, 'north': meadow})
+        lake.add_paths({'west': garden, 'south': village})
+        blacksmith.add_paths({'north': village})
+        market.add_paths({'east': castle})
+        temple.add_paths({'west': library})
+        graveyard.add_paths({'east': mountain})
+        waterfall.add_paths({'south': cave})
+        meadow.add_paths({'south': garden})
+
+        return {
+            'Start': start,
+            'Forest': forest,
+            'Cave': cave,
+            'Mountain': mountain,
+            'Village': village,
+            'Castle': castle,
+            'Dungeon': dungeon,
+            'Treasure Room': treasure,
+            'Library': library,
+            'Tower': tower,
+            'Garden': garden,
+            'Lake': lake,
+            'Blacksmith': blacksmith,
+            'Market': market,
+            'Temple': temple,
+            'Graveyard': graveyard,
+            'Waterfall': waterfall,
+            'Meadow': meadow
+        }
+
+    def move(self, direction):
+        next_room = self.current_room.move(direction)
+        if next_room:
+            self.current_room = next_room
+            return True
+        else:
+            return False
+
+    def pick_item(self, item):
+        if item in self.current_room.items:
+            self.current_room.items.remove(item)
+            self.inventory.append(item)
+            return True
+        else:
+            return False
+
+    def drop_item(self, item):
+        if item in self.inventory:
+            self.inventory.remove(item)
+            self.current_room.items.append(item)
+            return True
+        else:
+            return False
