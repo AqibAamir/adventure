@@ -253,3 +253,46 @@ class PuzzleRoom(Room):
         self.puzzle = puzzle
         self.solution = solution
         self.solved = False
+
+
+    def attempt_puzzle(self, answer):
+        if answer.lower() == self.solution.lower():
+            self.solved = True
+            return "You solved the puzzle!"
+        else:
+            return "That's not correct."
+
+class GameWithPuzzles(GameWithNPC):
+    def create_rooms(self):
+        rooms = super().create_rooms()
+        puzzle_room = PuzzleRoom("Puzzle Room", "A room with a challenging puzzle.", "What has keys but can't open locks?", "piano")
+        rooms['Forest'].add_paths({'north': puzzle_room})
+        puzzle_room.add_paths({'south': rooms['Forest']})
+        rooms['Puzzle Room'] = puzzle_room
+        return rooms
+
+class PlayerWithPuzzles(PlayerWithNPC):
+    def attempt_puzzle(self, answer):
+        if isinstance(self.game.current_room, PuzzleRoom):
+            return self.game.current_room.attempt_puzzle(answer)
+        else:
+            return "There's no puzzle to solve here."
+
+class AdventureWithPuzzles(AdventureWithNPC):
+    def start_game(self):
+        name = input("Enter your name: ")
+        self.player = PlayerWithPuzzles(name)
+        print(self.player.get_status())
+
+    def play(self):
+        self.start_game()
+        while True:
+            command = input("> ").split()
+            if command[0] in ["go", "move"]:
+                direction = command[1]
+                print(self.player.move(direction))
+            elif command[0] == "pick":
+                item = command[1]
+                print(self.player.pick_item(item))
+            elif command[0] == "drop":
+                item = command[1]
