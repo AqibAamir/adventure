@@ -202,3 +202,54 @@ class GameWithNPC(Game):
         rooms['Garden'].npc = NPC("Gardener", "Do you like the flowers?")
         rooms['Blacksmith'].npc = NPC("Blacksmith", "I can craft weapons for you.")
         rooms['Market'].npc = NPC("Merchant", "Take a look at my wares.")
+        rooms['Temple'].npc = NPC("Priest", "May the gods watch over you.")
+        rooms['Graveyard'].npc = NPC("Ghost", "Boo! Just kidding. Welcome to the graveyard.")
+        rooms['Waterfall'].npc = NPC("Fisherman", "The fish are biting today!")
+        rooms['Meadow'].npc = NPC("Shepherd", "The sheep are grazing peacefully.")
+        return rooms
+
+class PlayerWithNPC(Player):
+    def interact(self):
+        if hasattr(self.game.current_room, 'npc'):
+            return self.game.current_room.npc.interact()
+        else:
+            return "There's no one here to interact with."
+
+class AdventureWithNPC(Adventure):
+    def start_game(self):
+        name = input("Enter your name: ")
+        self.player = PlayerWithNPC(name)
+        print(self.player.get_status())
+
+    def play(self):
+        self.start_game()
+        while True:
+            command = input("> ").split()
+            if command[0] in ["go", "move"]:
+                direction = command[1]
+                print(self.player.move(direction))
+            elif command[0] == "pick":
+                item = command[1]
+                print(self.player.pick_item(item))
+            elif command[0] == "drop":
+                item = command[1]
+                print(self.player.drop_item(item))
+            elif command[0] == "inventory":
+                print(self.player.check_inventory())
+            elif command[0] == "status":
+                print(self.player.get_status())
+            elif command[0] == "interact":
+                print(self.player.interact())
+            elif command[0] == "help":
+                print("Commands: go/move [direction], pick [item], drop [item], inventory, status, interact, help, quit/exit")
+            elif command[0] in ["quit", "exit"]:
+                break
+            else:
+                print("Unknown command.")
+
+class PuzzleRoom(Room):
+    def __init__(self, name, description, puzzle, solution):
+        super().__init__(name, description)
+        self.puzzle = puzzle
+        self.solution = solution
+        self.solved = False
