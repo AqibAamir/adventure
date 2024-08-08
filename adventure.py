@@ -356,3 +356,46 @@ class AdventureWithBattles(AdventureWithPuzzles):
         name = input("Enter your name: ")
         self.player = PlayerWithBattles(name)
         print(self.player.get_status())
+
+    def play(self):
+        self.start_game()
+        while not self.player.game.is_over:
+            command = input("> ").split()
+            if command[0] in ["go", "move"]:
+                direction = command[1]
+                print(self.player.move(direction))
+            elif command[0] == "pick":
+                item = command[1]
+                print(self.player.pick_item(item))
+            elif command[0] == "drop":
+                item = command[1]
+                print(self.player.drop_item(item))
+            elif command[0] == "inventory":
+                print(self.player.check_inventory())
+            elif command[0] == "status":
+                print(self.player.get_status())
+            elif command[0] == "interact":
+                print(self.player.interact())
+            elif command[0] == "solve":
+                answer = " ".join(command[1:])
+                print(self.player.attempt_puzzle(answer))
+            elif command[0] == "battle":
+                print(self.player.battle())
+            elif command[0] == "help":
+                print("Commands: go/move [direction], pick [item], drop [item], inventory, status, interact, solve [answer], battle, help, quit/exit")
+            elif command[0] in ["quit", "exit"]:
+                break
+            else:
+                print("Unknown command.")
+
+class MagicRoom(Room):
+    def __init__(self, name, description):
+        super().__init__(name, description)
+        self.spellbook = "Ancient Spellbook"
+        self.items.append(self.spellbook)
+
+    def read_spellbook(self):
+        return "You read the spellbook and learn powerful magic."
+
+class GameWithMagic(GameWithBattles):
+    def create_rooms(self):
