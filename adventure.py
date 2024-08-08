@@ -399,3 +399,55 @@ class MagicRoom(Room):
 
 class GameWithMagic(GameWithBattles):
     def create_rooms(self):
+        rooms = super().create_rooms()
+        magic_room = MagicRoom("Magic Room", "A room filled with mystical artifacts and an ancient spellbook.")
+        rooms['Tower'].add_paths({'east': magic_room})
+        magic_room.add_paths({'west': rooms['Tower']})
+        rooms['Magic Room'] = magic_room
+        return rooms
+
+class PlayerWithMagic(PlayerWithBattles):
+    def read_spellbook(self):
+        if self.game.current_room.name == "Magic Room":
+            return self.game.current_room.read_spellbook()
+        else:
+            return "There's no spellbook here."
+
+class AdventureWithMagic(AdventureWithBattles):
+    def start_game(self):
+        name = input("Enter your name: ")
+        self.player = PlayerWithMagic(name)
+        print(self.player.get_status())
+
+    def play(self):
+        self.start_game()
+        while not self.player.game.is_over:
+            command = input("> ").split()
+            if command[0] in ["go", "move"]:
+                direction = command[1]
+                print(self.player.move(direction))
+            elif command[0] == "pick":
+                item = command[1]
+                print(self.player.pick_item(item))
+            elif command[0] == "drop":
+                item = command[1]
+                print(self.player.drop_item(item))
+            elif command[0] == "inventory":
+                print(self.player.check_inventory())
+            elif command[0] == "status":
+                print(self.player.get_status())
+            elif command[0] == "interact":
+                print(self.player.interact())
+            elif command[0] == "solve":
+                answer = " ".join(command[1:])
+                print(self.player.attempt_puzzle(answer))
+            elif command[0] == "battle":
+                print(self.player.battle())
+            elif command[0] == "read":
+                print(self.player.read_spellbook())
+            elif command[0] == "help":
+                print("Commands: go/move [direction], pick [item], drop [item], inventory, status, interact, solve [answer], battle, read, help, quit/exit")
+            elif command[0] in ["quit", "exit"]:
+                break
+            else:
+                print("Unknown command.")
