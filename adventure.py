@@ -451,3 +451,65 @@ class AdventureWithMagic(AdventureWithBattles):
                 break
             else:
                 print("Unknown command.")
+
+
+class HiddenRoom(Room):
+    def __init__(self, name, description):
+        super().__init__(name, description)
+        self.hidden = True
+
+    def reveal(self):
+        self.hidden = False
+        return "You have discovered a hidden room!"
+
+class GameWithHiddenRooms(GameWithMagic):
+    def create_rooms(self):
+        rooms = super().create_rooms()
+        hidden_room = HiddenRoom("Hidden Room", "A secret room with unknown treasures.")
+        rooms['Garden'].add_paths({'east': hidden_room})
+        hidden_room.add_paths({'west': rooms['Garden']})
+        rooms['Hidden Room'] = hidden_room
+        return rooms
+
+class PlayerWithHiddenRooms(PlayerWithMagic):
+    def reveal_hidden_room(self):
+        if isinstance(self.game.current_room, HiddenRoom) and self.game.current_room.hidden:
+            return self.game.current_room.reveal()
+        else:
+            return "There's no hidden room to reveal here."
+
+class AdventureWithHiddenRooms(AdventureWithMagic):
+    def start_game(self):
+        name = input("Enter your name: ")
+        self.player = PlayerWithHiddenRooms(name)
+        print(self.player.get_status())
+
+    def play(self):
+        self.start_game()
+        while not self.player.game.is_over:
+            command = input("> ").split()
+            if command[0] in ["go", "move"]:
+                direction = command[1]
+                print(self.player.move(direction))
+            elif command[0] == "pick":
+                item = command[1]
+                print(self.player.pick_item(item))
+            elif command[0] == "drop":
+                item = command[1]
+                print(self.player.drop_item(item))
+            elif command[0] == "inventory":
+                print(self.player.check_inventory())
+            elif command[0] == "status":
+                print(self.player.get_status())
+            elif command[0] == "interact":
+                print(self.player.interact())
+            elif command[0] == "solve":
+                answer = " ".join(command[1:])
+                print(self.player.attempt_puzzle(answer))
+            elif command[0] == "battle":
+                print(self.player.battle())
+            elif command[0] == "read":
+                print(self.player.read_spellbook())
+            elif command[0] == "reveal":
+                print(self.player.reveal_hidden_room())
+            elif command[0] == "help":
