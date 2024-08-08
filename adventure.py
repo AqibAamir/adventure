@@ -296,3 +296,63 @@ class AdventureWithPuzzles(AdventureWithNPC):
                 print(self.player.pick_item(item))
             elif command[0] == "drop":
                 item = command[1]
+
+print(self.player.drop_item(item))
+            elif command[0] == "inventory":
+                print(self.player.check_inventory())
+            elif command[0] == "status":
+                print(self.player.get_status())
+            elif command[0] == "interact":
+                print(self.player.interact())
+            elif command[0] == "solve":
+                answer = " ".join(command[1:])
+                print(self.player.attempt_puzzle(answer))
+            elif command[0] == "help":
+                print("Commands: go/move [direction], pick [item], drop [item], inventory, status, interact, solve [answer], help, quit/exit")
+            elif command[0] in ["quit", "exit"]:
+                break
+            else:
+                print("Unknown command.")
+
+class BattleRoom(Room):
+    def __init__(self, name, description, enemy):
+        super().__init__(name, description)
+        self.enemy = enemy
+        self.enemy_health = 50
+
+    def battle(self, player):
+        while self.enemy_health > 0 and player.health > 0:
+            player_damage = random.randint(5, 15)
+            enemy_damage = random.randint(5, 15)
+            self.enemy_health -= player_damage
+            player.health -= enemy_damage
+            print(f'You hit the {self.enemy} for {player_damage} damage.')
+            print(f'The {self.enemy} hits you for {enemy_damage} damage.')
+            if self.enemy_health <= 0:
+                return f'You defeated the {self.enemy}!'
+            if player.health <= 0:
+                player.game.end_game()
+                return 'You have been defeated!'
+        return 'The battle is over.'
+
+class GameWithBattles(GameWithPuzzles):
+    def create_rooms(self):
+        rooms = super().create_rooms()
+        battle_room = BattleRoom("Battle Room", "A room with a fierce enemy.", "Goblin")
+        rooms['Cave'].add_paths({'north': battle_room})
+        battle_room.add_paths({'south': rooms['Cave']})
+        rooms['Battle Room'] = battle_room
+        return rooms
+
+class PlayerWithBattles(PlayerWithPuzzles):
+    def battle(self):
+        if isinstance(self.game.current_room, BattleRoom):
+            return self.game.current_room.battle(self)
+        else:
+            return "There's no one to battle here."
+
+class AdventureWithBattles(AdventureWithPuzzles):
+    def start_game(self):
+        name = input("Enter your name: ")
+        self.player = PlayerWithBattles(name)
+        print(self.player.get_status())
