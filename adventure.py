@@ -552,3 +552,48 @@ class AdventureWithMerchant(AdventureWithHiddenRooms):
         name = input("Enter your name: ")
         self.player = PlayerWithMerchant(name)
         print(self.player.get_status())
+        self.player = PlayerWithMerchant(name)
+        print(self.player.get_status())
+
+    def play(self):
+        self.start_game()
+        while not self.player.game.is_over:
+            command = input("> ").split()
+            if command[0] in ["go", "move"]:
+                direction = command[1]
+                print(self.player.move(direction))
+            elif command[0] == "pick":
+                item = command[1]
+                print(self.player.pick_item(item))
+            elif command[0] == "drop":
+                item = command[1]
+                print(self.player.drop_item(item))
+            elif command[0] == "inventory":
+                print(self.player.check_inventory())
+            elif command[0] == "status":
+                print(self.player.get_status())
+            elif command[0] == "interact":
+                print(self.player.interact())
+            elif command[0] == "solve":
+                answer = " ".join(command[1:])
+                print(self.player.attempt_puzzle(answer))
+            elif command[0] == "battle":
+                print(self.player.battle())
+            elif command[0] == "read":
+                print(self.player.read_spellbook())
+            elif command[0] == "reveal":
+                print(self.player.reveal_hidden_room())
+            elif command[0] == "buy":
+                item = " ".join(command[1:])
+                print(self.player.buy_item(item))
+            elif command[0] == "help":
+                print("Commands: go/move [direction], pick [item], drop [item], inventory, status, interact, solve [answer], battle, read, reveal, buy [item], help, quit/exit")
+            elif command[0] in ["quit", "exit"]:
+                break
+            else:
+                print("Unknown command.")
+
+if __name__ == "__main__":
+    game = AdventureWithMerchant()
+    game.play()
+
