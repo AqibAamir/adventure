@@ -513,3 +513,42 @@ class AdventureWithHiddenRooms(AdventureWithMagic):
             elif command[0] == "reveal":
                 print(self.player.reveal_hidden_room())
             elif command[0] == "help":
+                print("Commands: go/move [direction], pick [item], drop [item], inventory, status, interact, solve [answer], battle, read, reveal, help, quit/exit")
+            elif command[0] in ["quit", "exit"]:
+                break
+            else:
+                print("Unknown command.")
+
+class MerchantRoom(Room):
+    def __init__(self, name, description):
+        super().__init__(name, description)
+        self.merchant_inventory = ["Sword", "Shield", "Potion"]
+
+    def buy_item(self, item):
+        if item in self.merchant_inventory:
+            self.merchant_inventory.remove(item)
+            return f'You bought {item}.'
+        else:
+            return f'{item} is not available.'
+
+class GameWithMerchant(GameWithHiddenRooms):
+    def create_rooms(self):
+        rooms = super().create_rooms()
+        merchant_room = MerchantRoom("Merchant Room", "A room with a traveling merchant.")
+        rooms['Market'].add_paths({'east': merchant_room})
+        merchant_room.add_paths({'west': rooms['Market']})
+        rooms['Merchant Room'] = merchant_room
+        return rooms
+
+class PlayerWithMerchant(PlayerWithHiddenRooms):
+    def buy_item(self, item):
+        if isinstance(self.game.current_room, MerchantRoom):
+            return self.game.current_room.buy_item(item)
+        else:
+            return "There's no merchant here."
+
+class AdventureWithMerchant(AdventureWithHiddenRooms):
+    def start_game(self):
+        name = input("Enter your name: ")
+        self.player = PlayerWithMerchant(name)
+        print(self.player.get_status())
