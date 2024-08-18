@@ -1,0 +1,75 @@
+Adventure Game Instructions
+
+Welcome to the Adventure Game! Below are the instructions to help you navigate through the game world and make the most of your adventure.
+Commands
+Movement
+
+    go [direction] or move [direction]
+        Move in a specified direction. Directions include: north, south, east, west.
+
+Item Management
+
+    pick [item]
+        Pick up an item from the current room and add it to your inventory.
+    drop [item]
+        Drop an item from your inventory into the current room.
+
+Inventory
+
+    inventory
+        Display the items currently in your inventory.
+
+Status
+
+    status
+        Show your current status, including your health and the details of the room you are in.
+
+Interactions
+
+    interact
+        Interact with NPCs in the current room. This can provide additional information or help.
+
+Puzzles
+
+    solve [answer]
+        Attempt to solve a puzzle if you are in a Puzzle Room. Provide the answer to the puzzle to proceed.
+
+Battles
+
+    battle
+        Engage in a battle if you are in a Battle Room. Fight against the enemy present in the room.
+
+Magic
+
+    read
+        Read the spellbook if you are in the Magic Room. This might grant you special abilities or knowledge.
+
+Hidden Rooms
+
+    reveal
+        Reveal hidden rooms if you are in a room with hidden areas.
+
+Merchant
+
+    buy [item]
+        Buy items from a merchant if you are in a Merchant Room. Available items include: Sword, Shield, Potion.
+
+Help
+
+    help
+        Display this help message or other useful instructions.
+
+Quit
+
+    quit or exit
+        Exit the game.
+
+Tips
+
+    Exploration: Explore each room thoroughly to find items, interact with NPCs, and uncover secrets.
+    Inventory Management: Keep track of the items you pick up and drop them when necessary.
+    Solve Puzzles: Some rooms contain puzzles that must be solved to progress further in the game.
+    Battle Strategy: Be prepared for battles by managing your health and items wisely.
+    Interactions: Engage with NPCs to gather clues or assistance.
+
+Enjoy your adventure!
