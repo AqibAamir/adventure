@@ -296,8 +296,7 @@ class AdventureWithPuzzles(AdventureWithNPC):
                 print(self.player.pick_item(item))
             elif command[0] == "drop":
                 item = command[1]
-
-print(self.player.drop_item(item))
+                print(self.player.drop_item(item))
             elif command[0] == "inventory":
                 print(self.player.check_inventory())
             elif command[0] == "status":
